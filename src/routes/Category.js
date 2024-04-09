@@ -1,7 +1,7 @@
 import express from 'express'
-import { categoryCreate } from '../controllers/Category.js'
+import { CategoryController } from '../controllers/Category.js'
 const router = express.Router()
-
-router.get('/create', categoryCreate)
+const controller = new CategoryController()
+router.get('/create', controller.categoryCreate)
 
 export default router

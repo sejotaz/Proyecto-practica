@@ -1,11 +1,12 @@
 import { validate } from 'uuid'
 import { bcryptAdapter } from '../config/encrypt.js'
 import { regularExps } from '../config/regular-expression.js'
-import { UserEntity } from '../entities/Users.js'
+import { UserEntity} from '../domain/entities/Users.js'
 import { UserModel } from '../models/User.js'
 import { EmailService } from '../services/email.service.js'
 import { HtmlEmailAdapter } from '../config/htmlValidateEmail.js'
 import { jwtAdapter } from '../config/jwt.adapter.js'
+import { CreateUserDto } from '../domain/dtos/User/user-create.dto.js'
 
 export const registerUser = async (req, res) => {
   try {
@@ -13,16 +14,10 @@ export const registerUser = async (req, res) => {
     // const token1 = req.headers.authorization
     // console.log();
     // return 1
-    const { name, lastName, username, email, password } = req.body
-    if (!email) throw new Error('EMAIL_EMPTY')
-    if (!regularExps.email.test(email)) throw new Error('EMAIL_INVALID')
-    const register = new UserModel({
-      name,
-      lastName,
-      username,
-      email,
-      password,
-    })
+    // const { name, lastName, username, email, password } = req.body
+    const [err, createUserDto] = CreateUserDto.createUserDto(req.body)
+    if(err) throw new Error(`${err}`)
+    const register = new UserModel(createUserDto)
     register.password = bcryptAdapter.hash(password)
     const user = await register.save() // revisar este await
     const token = await jwtAdapter.generateToken({ _id: user._id }, '15m')
