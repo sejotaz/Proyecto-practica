@@ -21,9 +21,11 @@ export class CreateCategoryDto {
       available =
         isAvaliable === 'true' ? true : isAvaliable === 'false' ? false : null
     }
-
-
-
     return [undefined, new CreateCategoryDto(categoryName, available, userId)]
   }
+
+  static async category(props){
+    
+  }
+
 }

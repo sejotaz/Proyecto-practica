@@ -17,4 +17,14 @@ export class CategoryController {
       res.status(404).json({ error: e.message })
     }
   }
+  category = async (req, res) => {
+    try {
+      const categories = await CategoryModel.find()
+      
+      res.json(categories.map(category=> CategoryEntity.fromObject(category)))
+    } catch (e) {
+      console.log({ e })
+      res.status(404).json({ e })
+    }
+  }
 }
