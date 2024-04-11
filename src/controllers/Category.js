@@ -17,14 +17,48 @@ export class CategoryController {
       res.status(404).json({ error: e.message })
     }
   }
-  category = async (req, res) => {
+  getCategory = async (req, res) => {
     try {
-      const categories = await CategoryModel.find()
-      
-      res.json(categories.map(category=> CategoryEntity.fromObject(category)))
+      const categories = await CategoryModel.find({ isRemove: false })
+
+      res.json(
+        categories.map((category) => CategoryEntity.fromObject(category))
+      )
     } catch (e) {
       console.log({ e })
       res.status(404).json({ e })
     }
+  }
+
+  getCategoryById = async (req, res) => {
+    try {
+      const categoryId = req.params.id
+      const category = await CategoryModel.findOne({ _id: categoryId })
+      console.log({ category })
+      res.json(CategoryEntity.fromObject(category))
+    } catch (e) {
+      res.status(404).json({ e })
+    }
+  }
+
+  categoryUpdate = async (req, res) => {
+    try {
+      const categoryId = req.params.id
+      const [err, updateCategory] = await CreateCategoryDto.updateCategory(
+        req.body
+      )
+      if (err) throw new Error(`${err}`)
+      const update = await CategoryModel.findOneAndUpdate(
+        { _id: categoryId },
+        updateCategory,
+        { new: true }
+      )
+      res.json(CategoryEntity.fromObject(update))
+    } catch (e) {}
+  }
+  categoryDelete = async (req, res) => {
+    const categoryId = req.params.id
+    await CategoryModel.updateOne({ _id: categoryId }, { isRemove: true })
+    res.json(true)
   }
 }

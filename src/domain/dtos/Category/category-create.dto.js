@@ -1,22 +1,20 @@
-import { CategoryModel } from "../../../models/Category.js"
+import { CategoryModel } from '../../../models/Category.js'
 
 export class CreateCategoryDto {
-  constructor(
-    categoryName,
-    isAvaliable,
-    userId
-    ) {
-    this.categoryName = categoryName,
-    this.isAvaliable = isAvaliable,
-    this.userId = userId
+  constructor(categoryName, isAvaliable, userId) {
+    ;(this.categoryName = categoryName),
+      (this.isAvaliable = isAvaliable),
+      (this.userId = userId)
   }
   static async createCategory(props) {
-    const { categoryName, isAvaliable, userId } = props
-    const existingCategory = await CategoryModel.countDocuments({categoryName})
-    if(!!existingCategory) return['CATEGORY_ ALREADY_EXIST']
-    if (!categoryName) return['REQUERIED_FIELD']
+    const { categoryName, isAvaliable, userId, isRemove } = props
+    const existingCategory = await CategoryModel.countDocuments({
+      categoryName,
+    })
+    if (!!existingCategory) return ['CATEGORY_ALREADY_EXIST']
+    if (!categoryName) return ['REQUERIED_FIELD']
     if (!userId) return ['REQUIRED_USER0']
-    let available;
+    let available
     if (typeof isAvaliable === 'string') {
       available =
         isAvaliable === 'true' ? true : isAvaliable === 'false' ? false : null
@@ -24,8 +22,9 @@ export class CreateCategoryDto {
     return [undefined, new CreateCategoryDto(categoryName, available, userId)]
   }
 
-  static async category(props){
-    
+  static async updateCategory(props) {
+    // const categoryId = req.params.id
+    const { categoryName, isAvaliable, userId, isRemove } = props
+    return [undefined, new CreateCategoryDto(categoryName, isAvaliable, userId, isRemove)]
   }
-
 }

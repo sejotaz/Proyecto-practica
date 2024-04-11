@@ -8,7 +8,8 @@ const Schema = new mongoose.Schema(
     _id: { type: String, default: uuidv4 },
     categoryName: { type: String, required: true, unique: true },
     isAvaliable: { type: Boolean, default: false },
-    userId: { type: String }
+    userId: { type: String },
+    isRemove: { type: Boolean, default: false}
   },
   {
     timestamps: true,
