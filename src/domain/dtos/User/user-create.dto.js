@@ -1,23 +1,27 @@
+import { regularExps } from "../../../config/regular-expression.js"
+
 export class CreateUserDto {
   constructor(
-    _id,
     name,
     lastName,
     username,
     email,
     password,
   ){
-    this._id = _id
     this.name = name
     this.lastName = lastName
     this.username = username
     this.email = email
     this.password = password
   }
+  
   static createUserDto(props){
     const { name, lastName, username, email, password } = props
-    if (!email) throw new Error('EMAIL_EMPTY')
-    if (!regularExps.email.test(email)) throw new Error('EMAIL_INVALID')
+    console.log({email});
+    if (!email) return['EMAIL_EMPTY']
+    if (!password) return['EMAIL_password']
+    if (!username) return['EMAIL_username']
+    if (!regularExps.email.test(email)) return['EMAIL_INVALID']
     return [undefined, new CreateUserDto(name, lastName, username,email, password)]
   }
 }

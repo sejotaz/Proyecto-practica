@@ -19,6 +19,7 @@ export class CategoryController {
   }
   getCategory = async (req, res) => {
     try {
+      console.log(req.body);
       const categories = await CategoryModel.find({ isRemove: false })
 
       res.json(

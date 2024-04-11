@@ -1,4 +1,3 @@
-import { validate } from 'uuid'
 import { bcryptAdapter } from '../config/encrypt.js'
 import { regularExps } from '../config/regular-expression.js'
 import { UserEntity } from '../domain/entities/Users.js'
@@ -16,12 +15,13 @@ export class RegisterUserController {
       const [err, createUserDto] = CreateUserDto.createUserDto(req.body)
       if (err) throw new Error(`${err}`)
       const register = new UserModel(createUserDto)
-      register.password = bcryptAdapter.hash(password)
+    console.log(createUserDto);
+      register.password = bcryptAdapter.hash(createUserDto.password)
       const user = await register.save()
       const token = await jwtAdapter.generateToken({ _id: user._id }, '15m')
       const link = `${process.env.APP_ROUTE}${process.env.VALIDATE_EMAIL_ROUTE}/${token}`
       const options = {
-        to: email,
+        to: createUserDto.email,
         subject: 'Validate Email',
         htmlBody: HtmlEmailAdapter.htmlValidateEmail(link),
       }
@@ -57,14 +57,15 @@ export class RegisterUserController {
       if (email) {
         if (!regularExps.email.test(email)) throw new Error('EMAIL_INVALID')
       }
+    console.log({password, username})
       if (!password) throw new Error('PASSWORD_REQUIRED')
       const user = await UserModel.findOne({ $or: [{ email }, { username }] })
       const token = await jwtAdapter.generateToken(
         {
-          id: user._id,
+          _id: user._id,
           email: user.email,
         },
-        '15m'
+        '24h'
       )
       const isPasswordValid = bcryptAdapter.compare(password, user.password)
       console.log({ isPasswordValid })

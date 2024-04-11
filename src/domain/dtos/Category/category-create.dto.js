@@ -7,7 +7,7 @@ export class CreateCategoryDto {
       (this.userId = userId)
   }
   static async createCategory(props) {
-    const { categoryName, isAvaliable, userId, isRemove } = props
+    const { categoryName, isAvaliable = false, userId } = props
     const existingCategory = await CategoryModel.countDocuments({
       categoryName,
     })
