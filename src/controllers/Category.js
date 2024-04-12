@@ -22,7 +22,7 @@ export class CategoryController {
     try {
       const role = req.body.user.role
       console.log(role);
-      const categories = await CategoryModel.find({ isRemove: false })
+      const categories = await CategoryModel.find({ isRemove: false }).populate('userId')
 
       res.json(
         categories.map((category) => CategoryEntity.fromObject(category))
@@ -52,16 +52,23 @@ export class CategoryController {
       )
       if (err) throw new Error(`${err}`)
       const update = await CategoryModel.findOneAndUpdate(
-        { _id: categoryId },
-        updateCategory,
-        { new: true }
-      )
-      res.json(CategoryEntity.fromObject(update))
+    { _id: categoryId },
+    updateCategory,
+    { new: true }
+    )
+    res.json(update)
+    return 1
     } catch (e) {}
   }
   categoryDelete = async (req, res) => {
-    const categoryId = req.params.id
-    await CategoryModel.updateOne({ _id: categoryId }, { isRemove: true })
-    res.json(true)
+    try {
+      const user = req.body.user
+      if(!user.role.includes('ADMIN_ROLE')) throw new Error('UNANOTORIZED_USER')
+      const categoryId = req.params.id
+      await CategoryModel.updateOne({ _id: categoryId }, { isRemove: true })
+      res.json(true)
+    } catch (e) {
+      
+    }
   }
 }
