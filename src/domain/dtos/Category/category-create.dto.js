@@ -7,19 +7,20 @@ export class CreateCategoryDto {
       (this.userId = userId)
   }
   static async createCategory(props) {
-    const { categoryName, isAvaliable = false, userId } = props
+    const { categoryName, isAvaliable = false, user } = props
     const existingCategory = await CategoryModel.countDocuments({
       categoryName,
     })
     if (!!existingCategory) return ['CATEGORY_ALREADY_EXIST']
     if (!categoryName) return ['REQUERIED_FIELD']
-    if (!userId) return ['REQUIRED_USER0']
+    if (!user) return ['REQUIRED_USER0']
+    if(!user.role.includes('ADMIN_ROLE')) return ['UNAUTHORIZED_USER']
     let available
     if (typeof isAvaliable === 'string') {
       available =
         isAvaliable === 'true' ? true : isAvaliable === 'false' ? false : null
     }
-    return [undefined, new CreateCategoryDto(categoryName, available, userId)]
+    return [undefined, new CreateCategoryDto(categoryName, available, user._id)]
   }
 
   static async updateCategory(props) {

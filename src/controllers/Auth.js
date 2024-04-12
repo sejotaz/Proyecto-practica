@@ -6,6 +6,7 @@ import { EmailService } from '../services/email.service.js'
 import { HtmlEmailAdapter } from '../config/htmlValidateEmail.js'
 import { jwtAdapter } from '../config/jwt.adapter.js'
 import { CreateUserDto } from '../domain/dtos/User/user-create.dto.js'
+import { CreateSessionDto } from '../domain/dtos/Session/session-create.dto.js'
 
 export class RegisterUserController {
   constructor() {}
@@ -60,10 +61,12 @@ export class RegisterUserController {
     console.log({password, username})
       if (!password) throw new Error('PASSWORD_REQUIRED')
       const user = await UserModel.findOne({ $or: [{ email }, { username }] })
+      const [error, sessionDto] = CreateSessionDto.createSessionDto(user)
+      console.log(sessionDto);
+      if(error)throw new Error(error)
       const token = await jwtAdapter.generateToken(
         {
-          _id: user._id,
-          email: user.email,
+          ...sessionDto
         },
         '24h'
       )

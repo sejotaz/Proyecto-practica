@@ -5,6 +5,7 @@ export class CategoryController {
   constructor() {}
   categoryCreate = async (req, res) => {
     try {
+      
       // const { categoryName, isAvaliable, userId } = req.body
       const [err, createCategoryDto] = await CreateCategoryDto.createCategory(
         req.body
@@ -19,7 +20,8 @@ export class CategoryController {
   }
   getCategory = async (req, res) => {
     try {
-      console.log(req.body);
+      const role = req.body.user.role
+      console.log(role);
       const categories = await CategoryModel.find({ isRemove: false })
 
       res.json(
