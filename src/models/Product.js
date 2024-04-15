@@ -8,7 +8,7 @@ const Schema = new mongoose.Schema(
   productName: { type: String, required: true, unique: true },
   isAvaliable: { type: Boolean, default: false },
   categoryId: { type: String },
-  userId: { type: String, refPath: 'User' },
+  userId: { type: String, ref: 'User' },
   quantity: { type: Number, default: 0 },
   price: { type: Number, default: 0 },
   isRemove: { type: Boolean, default: false }

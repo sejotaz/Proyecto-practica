@@ -1,6 +1,6 @@
 import { ProductModel } from "../../../models/Product.js";
 
-export class CreatePoductDto {
+export class CreateProductDto {
   constructor(productName, isAvaliable, categoryId, userId, quantity, price){
     this.productName = productName
     this.isAvaliable = isAvaliable
@@ -28,8 +28,11 @@ export class CreatePoductDto {
         isAvaliable === 'true' ? true : isAvaliable === 'false' ? false : null
     }
 
-    return [undefined, new CreatePoductDto(productName, available, categoryId, user._id, parseInt(quantity), parseFloat(price))]
-
+    return [undefined, new CreateProductDto(productName, available, categoryId, user._id, parseInt(quantity), parseFloat(price))]
   }
-
+  static async updateProduct(props){
+    const { productName, isAvaliable , categoryId, user, quantity, price } = props
+    if (!user.role.includes('ADMIN_ROLE')) return ['UNAUTHORIZED_USER']
+    return [undefined, new CreateProductDto(productName, isAvaliable , categoryId, user, quantity, price)]
+  }
 }
